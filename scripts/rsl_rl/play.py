@@ -57,6 +57,7 @@ import os
 import time
 
 import gymnasium as gym
+import irmv_humanoid_locomotion.tasks  # noqa: F401
 import torch
 from rsl_rl.runners import DistillationRunner, OnPolicyRunner
 
@@ -76,8 +77,6 @@ from isaaclab_rl.utils.pretrained_checkpoint import get_published_pretrained_che
 import isaaclab_tasks  # noqa: F401
 from isaaclab_tasks.utils import get_checkpoint_path
 from isaaclab_tasks.utils.hydra import hydra_task_config
-
-import irmv_humanoid_locomotion.tasks  # noqa: F401
 
 
 @hydra_task_config(args_cli.task, args_cli.agent)
