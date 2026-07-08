@@ -13,11 +13,11 @@ from . import agents
 
 
 gym.register(
-    id="Template-Irmv-Humanoid-Locomotion-v0",
+    id="Irmv-Flat-v0",
     entry_point="isaaclab.envs:ManagerBasedRLEnv",
     disable_env_checker=True,
     kwargs={
-        "env_cfg_entry_point": f"{__name__}.irmv_humanoid_locomotion_env_cfg:IrmvHumanoidLocomotionEnvCfg",
-        "rsl_rl_cfg_entry_point": f"{agents.__name__}.rsl_rl_ppo_cfg:PPORunnerCfg",
+        "env_cfg_entry_point": f"{__name__}.irmv_humanoid_locomotion_env_cfg:IrmvFlatEnvCfg",
+        "rsl_rl_cfg_entry_point": f"{agents.__name__}.rsl_rl_ppo_cfg:IrmvFlatPPORunnerCfg",
     },
 )
