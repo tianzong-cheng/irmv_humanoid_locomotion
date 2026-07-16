@@ -46,7 +46,7 @@ class MySceneCfg(InteractiveSceneCfg):
         prim_path="/World/ground",
         terrain_type="generator",
         terrain_generator=TerrainGeneratorCfg(
-            size=(8.0, 8.0),
+            size=(100.0, 100.0),
             sub_terrains={"fractal_noise": FractalNoiseTerrainCfg()},
             curriculum=False,
             num_rows=1,
