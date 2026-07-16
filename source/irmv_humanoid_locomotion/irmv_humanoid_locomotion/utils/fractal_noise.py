@@ -49,3 +49,47 @@ def generate_perlin_noise_2d(shape: Sequence[int], res: Sequence[int]) -> np.nda
     n0 = n00 * (1 - t[:, :, 0]) + t[:, :, 0] * n10
     n1 = n01 * (1 - t[:, :, 0]) + t[:, :, 0] * n11
     return np.sqrt(2) * ((1 - t[:, :, 1]) * n0 + t[:, :, 1] * n1)
+
+
+def generate_fractal_noise_2d(
+    shape: Sequence[int],
+    res: Sequence[int],
+    octaves: int = 4,
+    lacunarity: float = 2.0,
+    gain: float = 0.5,
+    z_scale: float = 1.0,
+    centering: bool = True,
+) -> np.ndarray:
+    """Generate 2D fractal Brownian motion (fBm) noise by stacking Perlin noise octaves.
+
+    Args:
+        shape: Output array dimensions (rows, cols).
+        res: Base noise grid resolution. Must divide ``shape`` for the first octave.
+            Subsequent octaves multiply ``res`` by ``lacunarity``; if the result no
+            longer divides ``shape`` evenly, that octave is skipped.
+        octaves: Number of noise layers to stack.
+        lacunarity: Frequency multiplier between successive octaves.
+        gain: Amplitude multiplier between successive octaves (``gain < 1`` = higher
+            octaves contribute less).
+        z_scale: Vertical scaling applied to the final noise (in meters).
+        centering: If True, subtract the mean so the terrain is centered around zero.
+
+    Returns:
+        Noise array of shape ``(shape[0], shape[1])``, dtype ``float32``, scaled by
+        ``z_scale``.
+    """
+    noise = np.zeros(shape, dtype=np.float32)
+    amplitude = 1.0
+    current_res = [int(res[0]), int(res[1])]
+    for i in range(octaves):
+        if shape[0] % current_res[0] != 0 or shape[1] % current_res[1] != 0:
+            if i == 0:
+                raise ValueError(f"Shape {shape} must be divisible by base resolution {res}.")
+            break
+        noise += amplitude * generate_perlin_noise_2d(shape, current_res).astype(np.float32)
+        amplitude *= gain
+        current_res = [int(current_res[0] * lacunarity), int(current_res[1] * lacunarity)]
+    noise *= z_scale
+    if centering:
+        noise -= np.mean(noise)
+    return noise
