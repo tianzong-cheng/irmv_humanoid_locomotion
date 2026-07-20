@@ -153,6 +153,12 @@ def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agen
     print(f"Exact experiment name requested from command line: {log_dir}")
     if agent_cfg.run_name:
         log_dir += f"_{agent_cfg.run_name}"
+    # append hydra CLI overrides to the log directory name so modified params are documented
+    for hydra_arg in hydra_args:
+        var = hydra_arg.split("=")[0]
+        var = var.rsplit(".", 2)[-2 if var.endswith(".weight") else -1]
+        val = hydra_arg.split("=")[1]
+        log_dir += f"__{var}_{val}"
     log_dir = os.path.join(log_root_path, log_dir)
 
     # set the IO descriptors export flag if requested
