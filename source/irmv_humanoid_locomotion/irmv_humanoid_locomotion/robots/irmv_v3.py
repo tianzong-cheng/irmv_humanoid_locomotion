@@ -6,22 +6,17 @@ from isaaclab.assets import ArticulationCfg
 
 from irmv_humanoid_locomotion.assets import ASSET_DIR
 
-# TODO: MEASURE AND CALIBRATE — these are placeholder values from G1, not measured for IRMV V3.
-#       Replace with measured armature constants once available.
-ARMATURE_HIP = 0.010177520  # placeholder, derived from G1's 7520-14 actuator
-ARMATURE_KNEE = 0.025101925  # placeholder, derived from G1's 7520-22 actuator
-ARMATURE_ANKLE = 0.003609725  # placeholder, derived from G1's 5020 actuator
+ARMATURE_8520 = 0.125579552
+ARMATURE_6020 = 0.0358060596
 
 NATURAL_FREQ = 10 * 2.0 * math.pi  # 10 Hz
 DAMPING_RATIO = 2.0
 
-STIFFNESS_HIP = ARMATURE_HIP * NATURAL_FREQ**2
-STIFFNESS_KNEE = ARMATURE_KNEE * NATURAL_FREQ**2
-STIFFNESS_ANKLE = ARMATURE_ANKLE * NATURAL_FREQ**2
+STIFFNESS_8520 = ARMATURE_8520 * NATURAL_FREQ**2
+STIFFNESS_6020 = ARMATURE_6020 * NATURAL_FREQ**2
 
-DAMPING_HIP = 2.0 * DAMPING_RATIO * ARMATURE_HIP * NATURAL_FREQ
-DAMPING_KNEE = 2.0 * DAMPING_RATIO * ARMATURE_KNEE * NATURAL_FREQ
-DAMPING_ANKLE = 2.0 * DAMPING_RATIO * ARMATURE_ANKLE * NATURAL_FREQ
+DAMPING_8520 = 2.0 * DAMPING_RATIO * ARMATURE_8520 * NATURAL_FREQ
+DAMPING_6020 = 2.0 * DAMPING_RATIO * ARMATURE_6020 * NATURAL_FREQ
 
 IRMV_V3_CFG = ArticulationCfg(
     spawn=sim_utils.UrdfFileCfg(
@@ -65,32 +60,17 @@ IRMV_V3_CFG = ArticulationCfg(
             ],
             effort_limit_sim=50.0,
             velocity_limit_sim=30.0,
-            stiffness={
-                ".*_hip_pitch_joint": STIFFNESS_HIP,
-                ".*_hip_roll_joint": STIFFNESS_KNEE,
-                ".*_hip_yaw_joint": STIFFNESS_HIP,
-                ".*_knee_joint": STIFFNESS_KNEE,
-            },
-            damping={
-                ".*_hip_pitch_joint": DAMPING_HIP,
-                ".*_hip_roll_joint": DAMPING_KNEE,
-                ".*_hip_yaw_joint": DAMPING_HIP,
-                ".*_knee_joint": DAMPING_KNEE,
-            },
-            armature={
-                ".*_hip_pitch_joint": ARMATURE_HIP,
-                ".*_hip_roll_joint": ARMATURE_KNEE,
-                ".*_hip_yaw_joint": ARMATURE_HIP,
-                ".*_knee_joint": ARMATURE_KNEE,
-            },
+            stiffness=STIFFNESS_8520,
+            damping=DAMPING_8520,
+            armature=ARMATURE_8520,
         ),
         "feet": ImplicitActuatorCfg(
             joint_names_expr=[".*_ankle_pitch_joint", ".*_ankle_roll_joint"],
             effort_limit_sim=50.0,
             velocity_limit_sim=30.0,
-            stiffness=2.0 * STIFFNESS_ANKLE,
-            damping=2.0 * DAMPING_ANKLE,
-            armature=2.0 * ARMATURE_ANKLE,
+            stiffness=2.0 * STIFFNESS_6020,
+            damping=2.0 * DAMPING_6020,
+            armature=2.0 * ARMATURE_6020,
         ),
     },
 )
